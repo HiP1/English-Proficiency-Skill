@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Proficiency Assessment — {{DISPLAY_NAME}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #faf9f7;
+    --surface: #ffffff;
+    --surface-alt: #f5f3f0;
+    --text: #1a1a1a;
+    --text-secondary: #5c5c5c;
+    --text-muted: #8a8a8a;
+    --accent: #2d5a3d;
+    --accent-light: #e8f0eb;
+    --accent-warm: #c47a3a;
+    --border: #e5e2dd;
+    --border-light: #f0ede8;
+    --gold: #b8942e;
+    --gold-light: #faf5e8;
+    --serif: 'DM Serif Display', Georgia, serif;
+    --sans: 'DM Sans', -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  /* ── Dark mode (automatic via system preference) ──
+     To force permanent dark: move these vars into :root and remove the media query.
+     To force permanent light: delete this entire @media block. */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121212;
+      --surface: #1a1a1a;
+      --surface-alt: #222222;
+      --text: #e8e6e3;
+      --text-secondary: #a8a5a0;
+      --text-muted: #706d68;
+      --accent: #5dab7a;
+      --accent-light: #1a2e22;
+      --accent-warm: #d99a5b;
+      --border: #2a2a2a;
+      --border-light: #232323;
+      --gold: #d4ad3a;
+      --gold-light: #1f1c12;
+    }
+
+    .score-card.ielts::before, .score-card.ielts .score-value { --ielts: #e05a4e; }
+    .score-card.ielts::before { background: var(--ielts); }
+    .score-card.ielts .score-value { color: var(--ielts); }
+
+    .score-card.toefl::before, .score-card.toefl .score-value { --toefl: #4a9fd6; }
+    .score-card.toefl::before { background: var(--toefl); }
+    .score-card.toefl .score-value { color: var(--toefl); }
+
+    .score-card.cambridge::before, .score-card.cambridge .score-value { --cambridge: #b06ed4; }
+    .score-card.cambridge::before { background: var(--cambridge); }
+    .score-card.cambridge .score-value { color: var(--cambridge); }
+
+    .register-technical { background: #1a1d33; color: #7b8adf; }
+    .register-casual { background: #132418; color: #4ade80; }
+    .register-formal { background: #2a2010; color: #d4a24a; }
+    .register-analytical { background: #2a1224; color: #e58aaf; }
+    .register-directive { background: #0f2226; color: #3abac9; }
+
+    .bm-fill-muted { background: rgba(138,138,138,0.25); }
+    .bm-fill-gold { background: rgba(184,148,46,0.3); }
+    .bm-fill-purple { background: rgba(168,110,212,0.3); }
+    .bm-fill-red { background: rgba(224,90,78,0.3); }
+    .bm-fill-blue { background: rgba(74,159,214,0.3); }
+
+    .benchmark-insight { border-color: rgba(212,173,58,0.25); }
+
+    .sample:hover, .sample.open { border-color: #3a3a3a; }
+
+    .header .header-top h1 { color: var(--text); }
+
+    .bm-fill-you { background: linear-gradient(90deg, rgba(93,171,122,0.1) 0%, rgba(93,171,122,0.35) 100%); }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 32px 64px;
+  }
+
+  /* ── Header ── */
+  .header {
+    border-bottom: 2px solid var(--text);
+    padding-bottom: 28px;
+    margin-bottom: 12px;
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .header h1 {
+    font-family: var(--serif);
+    font-size: 32px;
+    font-weight: 400;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
+
+  .header h1 span {
+    display: block;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .header-badge {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    letter-spacing: 0.3px;
+    line-height: 1.2;
+    padding-bottom: 4px;
+  }
+
+  .header-meta {
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+  }
+
+  .header-meta strong { color: var(--text); font-weight: 600; }
+
+  /* ── Page Navigation ──
+     Remove this section entirely if using a single-page scorecard. */
+  .page-nav {
+    display: flex;
+    gap: 0;
+    margin-bottom: 36px;
+    border-bottom: 2px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 100;
+    padding-top: 8px;
+  }
+
+  .page-nav button {
+    flex: 1;
+    padding: 14px 20px;
+    background: none;
+    border: none;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s;
+    letter-spacing: 0.3px;
+  }
+
+  .page-nav button:hover { color: var(--text-secondary); }
+
+  .page-nav button.active {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .page-nav button.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent);
+    animation: slideIn 0.3s ease;
+  }
+
+  @keyframes slideIn {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+
+  .page-panel {
+    display: none;
+    animation: fadeUp 0.4s ease;
+  }
+
+  .page-panel.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Sections ── */
+  .section { margin-bottom: 40px; }
+
+  .section-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 400;
+    margin-bottom: 4px;
+  }
+
+  .section-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  /* ── Score Cards ──
+     Default: 6 cards in 2-column grid. If using 7 cards (both IELTS variants),
+     make CEFR span full width: .scores-grid .score-card:first-child { grid-column: 1 / -1; }
+     Score values start large (56px) and shrink on reveal while descriptions grow in.
+     min-height prevents layout shift during the animation. */
+  .scores-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 600px) { .scores-grid { grid-template-columns: 1fr; } }
+
+  .score-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 26px;
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+    transition: box-shadow 0.3s, transform 0.3s;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .score-card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    transform: translateY(-2px);
+  }
+
+  .score-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .score-card.cefr::before { background: var(--accent); }
+  .score-card.ielts::before { background: #c0392b; }
+  .score-card.toefl::before { background: #2980b9; }
+  .score-card.cambridge::before { background: #8e44ad; }
+  .score-card.toeic-lr::before { background: var(--gold); }
+  .score-card.toeic-sw::before { background: var(--accent-warm); }
+
+  .score-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    flex-shrink: 0;
+  }
+
+  .score-value-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .score-value {
+    font-family: var(--serif);
+    font-weight: 400;
+    line-height: 1;
+    font-size: 56px;
+    transition: font-size 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    white-space: nowrap;
+  }
+
+  .score-card.cefr .score-value { color: var(--accent); }
+  .score-card.ielts .score-value { color: #c0392b; }
+  .score-card.toefl .score-value { color: #2980b9; }
+  .score-card.cambridge .score-value { color: #8e44ad; }
+  .score-card.toeic-lr .score-value { color: var(--gold); }
+  .score-card.toeic-sw .score-value { color: var(--accent-warm); }
+
+  .score-card.revealed .score-value {
+    font-size: 30px;
+  }
+
+  .score-detail {
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .score-scale {
+    font-size: 1px;
+    color: var(--text-muted);
+    font-family: var(--mono);
+    opacity: 0;
+    max-height: 0;
+    transition: opacity 0.3s ease, max-height 0.4s cubic-bezier(0.22, 1, 0.36, 1), font-size 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .score-desc {
+    font-size: 1px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease 0.05s, max-height 0.5s cubic-bezier(0.22, 1, 0.36, 1), font-size 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.05s;
+  }
+
+  .score-card.revealed .score-scale {
+    opacity: 1;
+    max-height: 24px;
+    margin-bottom: 6px;
+    font-size: 12px;
+  }
+
+  .score-card.revealed .score-desc {
+    max-height: 300px;
+    opacity: 1;
+    margin-top: 4px;
+    font-size: 13px;
+  }
+
+  /* ── Breakdown Table ── */
+  .breakdown {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 16px;
+  }
+
+  .breakdown-header {
+    background: var(--surface-alt);
+    padding: 14px 24px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .breakdown-row {
+    display: grid;
+    grid-template-columns: 120px 1fr 100px;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border-light);
+    align-items: center;
+    font-size: 14px;
+  }
+
+  .breakdown-row:last-child { border-bottom: none; }
+  .breakdown-row .skill { font-weight: 600; color: var(--text); }
+  .breakdown-row .detail { color: var(--text-secondary); font-size: 13px; }
+  .breakdown-row .grade { text-align: right; font-family: var(--mono); font-weight: 500; font-size: 13px; }
+  .grade-high { color: var(--accent); }
+  .grade-mid { color: var(--accent-warm); }
+
+  /* ── Callout ── */
+  .callout {
+    background: var(--accent-light);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 20px 24px;
+    margin-top: 16px;
+    margin-bottom: 24px;
+  }
+
+  .callout p { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
+  .callout strong { color: var(--text); }
+
+  /* ── Findings ── */
+  .findings {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  @media (max-width: 600px) { .findings { grid-template-columns: 1fr; } }
+
+  .finding {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .finding:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+  }
+
+  .finding-icon { font-size: 20px; margin-bottom: 8px; }
+  .finding-title { font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+  .finding-text { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+  /* ── Benchmarks (horizontal bar chart) ──
+     Each institution gets its own row. Sorted low-to-high within each group.
+     "This assessment" is the final row, visually separated with a dashed border.
+     data-pct is the bar width as percentage of the scale maximum.
+     For TOEIC: pct = score / 990 * 100
+     For TOEFL: pct = score / 120 * 100
+     For IELTS: pct = score / 9.0 * 100 */
+  .benchmark-group {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+  }
+
+  .benchmark-group-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  .bm-chart {
+    position: relative;
+  }
+
+  .bm-row {
+    display: grid;
+    grid-template-columns: 160px 1fr 48px;
+    align-items: center;
+    gap: 14px;
+    padding: 6px 0;
+  }
+
+  .bm-row-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.3;
+    text-align: right;
+  }
+
+  .bm-row-label strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .bm-row-bar {
+    position: relative;
+    height: 22px;
+    background: var(--surface-alt);
+    border-radius: 4px;
+    overflow: visible;
+  }
+
+  .bm-row-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 4px;
+    width: 0%;
+    transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .bm-row-score {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: right;
+    font-weight: 500;
+  }
+
+  .bm-fill-muted { background: rgba(138,138,138,0.18); }
+  .bm-fill-gold { background: rgba(184,148,46,0.22); }
+  .bm-fill-purple { background: rgba(142,68,173,0.22); }
+  .bm-fill-red { background: rgba(192,57,43,0.22); }
+  .bm-fill-blue { background: rgba(41,128,185,0.22); }
+
+  .bm-you-row {
+    margin-top: 6px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+  }
+
+  .bm-fill-you {
+    background: linear-gradient(90deg, rgba(45,90,61,0.08) 0%, rgba(45,90,61,0.28) 100%);
+  }
+
+  .bm-you-row .bm-row-label {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .bm-you-row .bm-row-score {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+  .benchmark-insight {
+    background: var(--gold-light);
+    border: 1px solid rgba(184, 148, 46, 0.2);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  .benchmark-insight strong { color: var(--text); }
+
+  /* ── Samples (hover on desktop, scroll on mobile) ── */
+  .sample-grid { display: grid; gap: 14px; }
+
+  .sample {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .sample:hover, .sample.open {
+    border-color: #ccc;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+  }
+
+  .sample-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 22px;
+    gap: 12px;
+    cursor: default;
+  }
+
+  .sample-context {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .sample-register {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .register-technical { background: #eef2ff; color: #4338ca; }
+  .register-casual { background: #f0fdf4; color: #16a34a; }
+  .register-formal { background: #fef3c7; color: #b45309; }
+  .register-analytical { background: #fce7f3; color: #be185d; }
+  .register-directive { background: #ecfeff; color: #0e7490; }
+
+  .sample-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sample-hint {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-style: italic;
+    flex-shrink: 0;
+    transition: opacity 0.3s;
+  }
+
+  .sample.open .sample-hint { opacity: 0; }
+
+  .sample-body {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+    border-top: 0px solid transparent;
+  }
+
+  .sample.open .sample-body {
+    max-height: 400px;
+    opacity: 1;
+    border-top: 1px solid var(--border-light);
+  }
+
+  .sample-body-inner { padding: 16px 22px 18px; }
+
+  .sample-quote {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+    font-style: italic;
+    padding: 14px 18px;
+    background: var(--surface-alt);
+    border-radius: 8px;
+    border-left: 3px solid var(--border);
+    margin-bottom: 12px;
+  }
+
+  .sample-annotations {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+
+  .sample-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 4px;
+    background: var(--accent-light);
+    color: var(--accent);
+    letter-spacing: 0.3px;
+  }
+
+  .sample-note {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ── Acquisition Context ──
+     Cards describing how the user acquired their English.
+     Adjust the number of cards and content to match the user's story.
+     This section can be omitted if the user didn't share their background. */
+  .acquisition-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  @media (max-width: 600px) { .acquisition-grid { grid-template-columns: 1fr; } }
+
+  .acquisition-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+  }
+
+  .acquisition-card .acq-era {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .acquisition-card .acq-title {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .acquisition-card .acq-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* ── Methodology ── */
+  .method-box {
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .method-box h3 { font-family: var(--serif); font-size: 16px; font-weight: 400; margin-bottom: 14px; }
+  .method-box p, .method-box li { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+  .method-box ul { list-style: none; padding: 0; }
+
+  .method-box li {
+    padding-left: 18px;
+    position: relative;
+    margin-bottom: 6px;
+  }
+
+  .method-box li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .footer-left {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.8;
+    font-family: var(--mono);
+    letter-spacing: 0.3px;
+  }
+
+  .divider { height: 1px; background: var(--border); margin: 8px 0 32px; }
+
+  /* ── Animations ── */
+  .animate-in {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .animate-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .delay-1 { transition-delay: 0.1s; }
+  .delay-2 { transition-delay: 0.2s; }
+  .delay-3 { transition-delay: 0.3s; }
+
+  /* ── Print (forces light mode, expands all content) ── */
+  @media print {
+    :root {
+      --bg: #ffffff; --surface: #ffffff; --surface-alt: #f5f3f0;
+      --text: #1a1a1a; --text-secondary: #5c5c5c; --text-muted: #8a8a8a;
+      --accent: #2d5a3d; --accent-light: #e8f0eb; --border: #e5e2dd; --border-light: #f0ede8;
+    }
+    body { background: white; }
+    .page { padding: 24px 0; }
+    .page-nav { display: none; }
+    .page-panel { display: block !important; }
+    .score-card, .finding, .breakdown, .method-box, .callout, .benchmark-group { break-inside: avoid; }
+    .score-card { min-height: auto; }
+    .score-card .score-value { font-size: 30px !important; }
+    .score-desc, .score-scale { max-height: none !important; opacity: 1 !important; font-size: revert !important; }
+    .score-card .score-scale { margin-bottom: 6px; font-size: 12px !important; }
+    .score-card .score-desc { margin-top: 4px; font-size: 13px !important; }
+    .sample-body { max-height: none !important; opacity: 1 !important; }
+    .sample-body-inner { padding: 16px 22px 18px; }
+  }
+
+  @media (max-width: 600px) {
+    .breakdown-row { grid-template-columns: 100px 1fr 80px; font-size: 13px; padding: 10px 16px; }
+    .page { padding: 24px 16px 48px; }
+    .header h1 { font-size: 26px; }
+    .benchmark-group { padding: 18px 20px; }
+    .score-value { font-size: 44px; }
+    .score-card.revealed .score-value { font-size: 26px; }
+    .score-card { min-height: 160px; }
+    .bm-row { grid-template-columns: 110px 1fr 44px; gap: 10px; }
+    .bm-row-label { font-size: 11px; }
+    .sample-hint { display: none; }
+  }
+
+  /* Reduce motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header
+       header-badge: just the date, right-aligned muted mono text. No branding. -->
+  <header class="header">
+    <div class="header-top">
+      <h1>
+        <span>English Proficiency Assessment</span>
+        {{DISPLAY_NAME}}
+      </h1>
+      <div class="header-badge">
+        {{ASSESSMENT_DATE}}
+      </div>
+    </div>
+    <div class="header-meta">
+      <strong>Native language:</strong> {{NATIVE_LANGUAGE}}<br>
+      <strong>Target language:</strong> English ({{TARGET_VARIETY}})
+    </div>
+  </header>
+
+  <!-- Navigation — remove this entire <nav> block for single-page scorecards -->
+  <nav class="page-nav">
+    <button class="active" onclick="showPage('scores', this)">Scores & Analysis</button>
+    <button onclick="showPage('evidence', this)">Evidence & Context</button>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- PAGE 1: SCORES & ANALYSIS                  -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div id="page-scores" class="page-panel active">
+
+    <section class="section animate-in">
+      <h2 class="section-title">Proficiency Scores</h2>
+      <p class="section-subtitle">Estimated equivalents across major international frameworks</p>
+
+      <div class="scores-grid">
+        <!-- CEFR — the headline score.
+             If using 7 cards (both IELTS variants), add: style="grid-column: 1 / -1;" -->
+        <div class="score-card cefr" onmouseenter="revealCard(this)" onmouseleave="hideCard(this)" onclick="toggleCard(this)">
+          <div class="score-label">CEFR</div>
+          <div class="score-value-wrap"><div class="score-value">{{CEFR_SCORE}}</div></div>
+          <div class="score-detail">
+            <div class="score-scale">{{CEFR_SCALE}}</div>
+            <div class="score-desc">{{CEFR_DESCRIPTION}}</div>
+          </div>
+        </div>
+        <!-- IELTS — combined Academic + General in one card by default.
+             If the user needs separate cards, duplicate this block and split the descriptions.
+             Label: "IELTS Academic" / "IELTS General Training" -->
+        <div class="score-card ielts" onmouseenter="revealCard(this)" onmouseleave="hideCard(this)" onclick="toggleCard(this)">
+          <div class="score-label">{{IELTS_LABEL}}</div>
+          <div class="score-value-wrap"><div class="score-value">{{IELTS_SCORE}}</div></div>
+          <div class="score-detail">
+            <div class="score-scale">{{IELTS_SCALE}}</div>
+            <div class="score-desc">{{IELTS_DESCRIPTION}}</div>
+          </div>
+        </div>
+        <div class="score-card toefl" onmouseenter="revealCard(this)" onmouseleave="hideCard(this)" onclick="toggleCard(this)">
+          <div class="score-label">TOEFL iBT</div>
+          <div class="score-value-wrap"><div class="score-value">{{TOEFL_SCORE}}</div></div>
+          <div class="score-detail">
+            <div class="score-scale">Total / out of 120</div>
+            <div class="score-desc">{{TOEFL_DESCRIPTION}}</div>
+          </div>
+        </div>
+        <div class="score-card cambridge" onmouseenter="revealCard(this)" onmouseleave="hideCard(this)" onclick="toggleCard(this)">
+          <div class="score-label">Cambridge</div>
+          <div class="score-value-wrap"><div class="score-value">{{CAMBRIDGE_SCORE}}</div></div>
+          <div class="score-detail">
+            <div class="score-scale">{{CAMBRIDGE_SCALE}}</div>
+            <div class="score-desc">{{CAMBRIDGE_DESCRIPTION}}</div>
+          </div>
+        </div>
+        <div class="score-card toeic-lr" onmouseenter="revealCard(this)" onmouseleave="hideCard(this)" onclick="toggleCard(this)">
+          <div class="score-label">TOEIC Listening & Reading</div>
+          <div class="score-value-wrap"><div class="score-value">{{TOEIC_LR_SCORE}}</div></div>
+          <div class="score-detail">
+            <div class="score-scale">Total / out of 990</div>
+            <div class="score-desc">{{TOEIC_LR_DESCRIPTION}}</div>
+          </div>
+        </div>
+        <div class="score-card toeic-sw" onmouseenter="revealCard(this)" onmouseleave="hideCard(this)" onclick="toggleCard(this)">
+          <div class="score-label">TOEIC Speaking & Writing</div>
+          <div class="score-value-wrap"><div class="score-value">{{TOEIC_SW_SCORE}}</div></div>
+          <div class="score-detail">
+            <div class="score-scale">Total / out of 400</div>
+            <div class="score-desc">{{TOEIC_SW_DESCRIPTION}}</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section animate-in delay-1">
+      <h2 class="section-title">Skill Breakdown</h2>
+      <p class="section-subtitle">Estimated performance by skill area</p>
+
+      <div class="breakdown">
+        <div class="breakdown-header">Individual Skills</div>
+        <!-- Use grade-high for strong skills, grade-mid for moderate.
+             Mark self-reported skills with "(self-reported)" in the detail text. -->
+        <div class="breakdown-row">
+          <span class="skill">Reading</span>
+          <span class="detail">{{READING_DETAIL}}</span>
+          <span class="grade {{READING_GRADE_CLASS}}">{{READING_GRADE}}</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="skill">Writing</span>
+          <span class="detail">{{WRITING_DETAIL}}</span>
+          <span class="grade {{WRITING_GRADE_CLASS}}">{{WRITING_GRADE}}</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="skill">Listening</span>
+          <span class="detail">{{LISTENING_DETAIL}}</span>
+          <span class="grade {{LISTENING_GRADE_CLASS}}">{{LISTENING_GRADE}}</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="skill">Speaking</span>
+          <span class="detail">{{SPEAKING_DETAIL}}</span>
+          <span class="grade {{SPEAKING_GRADE_CLASS}}">{{SPEAKING_GRADE}}</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="skill">Pragmatics</span>
+          <span class="detail">{{PRAGMATICS_DETAIL}}</span>
+          <span class="grade {{PRAGMATICS_GRADE_CLASS}}">{{PRAGMATICS_GRADE}}</span>
+        </div>
+      </div>
+
+      <div class="callout">
+        <p><strong>Key finding:</strong> {{KEY_FINDING}}</p>
+      </div>
+    </section>
+
+    <!-- Key Observations — use 4–6 findings depending on evidence.
+         Each finding should be a specific, evidence-backed pattern, not generic filler. -->
+    <section class="section animate-in delay-2">
+      <h2 class="section-title">Key Observations</h2>
+      <p class="section-subtitle">Patterns identified across all evaluated sources</p>
+
+      <div class="findings">
+        <!-- Repeat this block for each observation (typically 4–6).
+             Pick emoji icons that match the observation topic. -->
+        <div class="finding">
+          <div class="finding-icon">{{OBS_1_ICON}}</div>
+          <div class="finding-title">{{OBS_1_TITLE}}</div>
+          <div class="finding-text">{{OBS_1_TEXT}}</div>
+        </div>
+        <div class="finding">
+          <div class="finding-icon">{{OBS_2_ICON}}</div>
+          <div class="finding-title">{{OBS_2_TITLE}}</div>
+          <div class="finding-text">{{OBS_2_TEXT}}</div>
+        </div>
+        <div class="finding">
+          <div class="finding-icon">{{OBS_3_ICON}}</div>
+          <div class="finding-title">{{OBS_3_TITLE}}</div>
+          <div class="finding-text">{{OBS_3_TEXT}}</div>
+        </div>
+        <div class="finding">
+          <div class="finding-icon">{{OBS_4_ICON}}</div>
+          <div class="finding-title">{{OBS_4_TITLE}}</div>
+          <div class="finding-text">{{OBS_4_TEXT}}</div>
+        </div>
+        <!-- Add more findings as needed. Keep the grid even (pairs look best). -->
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- PAGE 2: EVIDENCE & CONTEXT                  -->
+  <!-- Remove this entire div for single-page.    -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div id="page-evidence" class="page-panel">
+
+    <!-- Institutional Benchmarks
+         Each benchmark group uses horizontal bar rows, sorted low-to-high.
+         "This assessment" is the final row with bm-you-row class (dashed separator).
+         data-pct = score / scale_max * 100
+         Use bm-fill-gold, bm-fill-purple, bm-fill-red, bm-fill-blue, bm-fill-muted for variety.
+         The bm-fill-you gradient is for the user's row. -->
+    <section class="section animate-in">
+      <h2 class="section-title">Institutional Benchmarks</h2>
+      <p class="section-subtitle">How this assessment compares to published requirements from global institutions</p>
+
+      <!-- TOEIC Benchmark Chart -->
+      <div class="benchmark-group" id="bm-toeic">
+        <div class="benchmark-group-title">{{BM_TOEIC_TITLE}}</div>
+        <div class="bm-chart">
+          <!-- Repeat bm-row for each benchmark, lowest to highest.
+               Last row uses class="bm-row bm-you-row" and bm-fill-you. -->
+          <div class="bm-row">
+            <div class="bm-row-label"><strong>{{BM_TOEIC_1_NAME}}</strong> {{BM_TOEIC_1_CONTEXT}}</div>
+            <div class="bm-row-bar">
+              <div class="bm-row-fill bm-fill-gold" data-pct="{{BM_TOEIC_1_PCT}}"></div>
+            </div>
+            <div class="bm-row-score">{{BM_TOEIC_1_SCORE}}</div>
+          </div>
+          <!-- Add more rows as needed... -->
+          <div class="bm-row bm-you-row">
+            <div class="bm-row-label">This assessment</div>
+            <div class="bm-row-bar">
+              <div class="bm-row-fill bm-fill-you" data-pct="{{BM_TOEIC_YOU_PCT}}"></div>
+            </div>
+            <div class="bm-row-score">{{BM_TOEIC_YOU_SCORE}}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOEFL Benchmark Chart -->
+      <div class="benchmark-group" id="bm-toefl">
+        <div class="benchmark-group-title">{{BM_TOEFL_TITLE}}</div>
+        <div class="bm-chart">
+          <div class="bm-row">
+            <div class="bm-row-label"><strong>{{BM_TOEFL_1_NAME}}</strong> {{BM_TOEFL_1_CONTEXT}}</div>
+            <div class="bm-row-bar">
+              <div class="bm-row-fill bm-fill-purple" data-pct="{{BM_TOEFL_1_PCT}}"></div>
+            </div>
+            <div class="bm-row-score">{{BM_TOEFL_1_SCORE}}</div>
+          </div>
+          <!-- Add more rows as needed... -->
+          <div class="bm-row bm-you-row">
+            <div class="bm-row-label">This assessment</div>
+            <div class="bm-row-bar">
+              <div class="bm-row-fill bm-fill-you" data-pct="{{BM_TOEFL_YOU_PCT}}"></div>
+            </div>
+            <div class="bm-row-score">{{BM_TOEFL_YOU_SCORE}}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="benchmark-insight">
+        <strong>What the benchmarks reveal:</strong> {{BENCHMARK_INSIGHT}}
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Acquisition Background
+         Cards describing how the user learned English.
+         Omit this section if the user didn't share their learning history. -->
+    <section class="section animate-in delay-1">
+      <h2 class="section-title">Acquisition Background</h2>
+      <p class="section-subtitle">How the subject's English proficiency was built</p>
+
+      <div class="acquisition-grid">
+        <!-- Repeat for each phase of the user's learning journey (typically 3–4 cards) -->
+        <div class="acquisition-card">
+          <div class="acq-era">{{ACQ_1_ERA}}</div>
+          <div class="acq-title">{{ACQ_1_TITLE}}</div>
+          <div class="acq-text">{{ACQ_1_TEXT}}</div>
+        </div>
+        <div class="acquisition-card">
+          <div class="acq-era">{{ACQ_2_ERA}}</div>
+          <div class="acq-title">{{ACQ_2_TITLE}}</div>
+          <div class="acq-text">{{ACQ_2_TEXT}}</div>
+        </div>
+        <!-- Add more as needed... -->
+      </div>
+
+      <div class="callout" style="margin-top: 20px;">
+        <p><strong>Why this matters:</strong> {{ACQUISITION_INSIGHT}}</p>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Writing Samples
+         Hover reveals on desktop, scroll reveals on mobile.
+         Register classes: register-technical, register-casual, register-formal,
+         register-analytical, register-directive
+         Pick 4–6 diverse samples across different registers. -->
+    <section class="section animate-in delay-2">
+      <h2 class="section-title">Writing Samples</h2>
+      <p class="section-subtitle">Representative excerpts demonstrating register range and linguistic competence</p>
+
+      <div class="sample-grid">
+        <!-- Repeat this block for each writing sample -->
+        <div class="sample">
+          <div class="sample-top">
+            <div class="sample-context">
+              <span class="sample-register {{SAMPLE_1_REGISTER_CLASS}}">{{SAMPLE_1_REGISTER}}</span>
+              <span class="sample-label">{{SAMPLE_1_LABEL}}</span>
+            </div>
+            <span class="sample-hint">hover to expand</span>
+          </div>
+          <div class="sample-body">
+            <div class="sample-body-inner">
+              <div class="sample-quote">"{{SAMPLE_1_QUOTE}}"</div>
+              <div class="sample-annotations">
+                <span class="sample-tag">{{SAMPLE_1_TAG_1}}</span>
+                <span class="sample-tag">{{SAMPLE_1_TAG_2}}</span>
+                <span class="sample-tag">{{SAMPLE_1_TAG_3}}</span>
+              </div>
+              <div class="sample-note">{{SAMPLE_1_NOTE}}</div>
+            </div>
+          </div>
+        </div>
+        <!-- Add more samples... -->
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Methodology
+         Model name goes here as factual disclosure. See Principle 5 in SKILL.md. -->
+    <section class="section animate-in delay-3">
+      <div class="method-box">
+        <h3>Assessment Methodology</h3>
+        <!-- Methodology intro: write this to reflect how THIS user was actually assessed.
+             Mention: what the assessment is (AI-estimated, not certified), the model used,
+             what evidence was analyzed (conversation, email, live sample, reading test...),
+             and whether formal test conditions were involved.
+             Examples:
+             - Chat-heavy: "...based on analysis of the subject's authentic writing across
+               20+ conversations covering technical, personal, and professional topics."
+             - Email-heavy: "...based on analysis of the subject's sent emails over 2 years,
+               supplemented by conversational writing samples."
+             - Live sample primary: "...based on a structured writing sample provided during
+               the assessment session, supplemented by limited chat history."
+             - With reading test: "...including a reading comprehension check administered
+               during the session."
+        -->
+        <p style="margin-bottom: 14px;">This is an <strong>AI-estimated assessment</strong> performed using {{AI_MODEL_NAME}}, not a certified examination. {{METHODOLOGY_INTRO}}</p>
+        <ul>
+          <li><strong>Written corpus:</strong> {{METHODOLOGY_WRITTEN_CORPUS}}</li>
+          <li><strong>Email corpus:</strong> {{METHODOLOGY_EMAIL_CORPUS}}</li>
+          <!-- Include only the evidence types that were actually used -->
+          <li><strong>Listening evidence:</strong> {{METHODOLOGY_LISTENING}}</li>
+          <li><strong>Speaking evidence:</strong> {{METHODOLOGY_SPEAKING}}</li>
+          <li><strong>Benchmark data:</strong> {{METHODOLOGY_BENCHMARKS}}</li>
+          <li><strong>Exclusions:</strong> {{METHODOLOGY_EXCLUSIONS}}</li>
+          <li><strong>Score calibration:</strong> {{METHODOLOGY_CALIBRATION}}</li>
+        </ul>
+        <p style="margin-top: 14px; font-style: italic;">Scores should be treated as informed estimates. For certified results, a formal examination (IELTS, TOEFL, TOEIC, Cambridge) is recommended.</p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Footer — single centered line with model attribution -->
+  <footer class="footer">
+    <div class="footer-left">
+      Assessment performed using {{AI_MODEL_NAME}} · {{FOOTER_DATE}}
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // ── Page Navigation ──
+  function showPage(page, btn) {
+    document.querySelectorAll('.page-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.page-nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    btn.classList.add('active');
+
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    hasScrolledEvidence = false;
+    requestAnimationFrame(() => {
+      document.querySelector('.page-nav').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      initAnimations();
+      initBenchmarks();
+    });
+  }
+
+  // ── Touch detection ──
+  let touchDevice = false;
+  window.addEventListener('touchstart', () => {
+    touchDevice = true;
+    initMobileScrollReveal();
+  }, { once: true });
+
+  // ── Score Card: Hover on desktop ──
+  function revealCard(el) {
+    if (!touchDevice) el.classList.add('revealed');
+  }
+  function hideCard(el) {
+    if (!touchDevice) el.classList.remove('revealed');
+  }
+  function toggleCard(el) {
+    // On mobile, tap is a fallback — scroll handles it, but tap can override
+    if (!touchDevice) return;
+    const isRevealed = el.classList.contains('revealed');
+    // Close all cards in the grid first
+    el.closest('.scores-grid').querySelectorAll('.score-card').forEach(c => c.classList.remove('revealed'));
+    if (!isRevealed) {
+      // Open this card and its row sibling
+      const row = getRowSiblings(el, '.scores-grid', '.score-card');
+      row.forEach(c => c.classList.add('revealed'));
+    }
+  }
+
+  // ── Writing Samples: Hover on desktop, tap on mobile ──
+  document.querySelectorAll('.sample').forEach(sample => {
+    sample.addEventListener('mouseenter', () => {
+      if (!touchDevice) sample.classList.add('open');
+    });
+    sample.addEventListener('mouseleave', () => {
+      if (!touchDevice) sample.classList.remove('open');
+    });
+    sample.addEventListener('click', () => {
+      if (!touchDevice) return;
+      const isOpen = sample.classList.contains('open');
+      // Close all samples first
+      document.querySelectorAll('.sample').forEach(s => s.classList.remove('open'));
+      if (!isOpen) sample.classList.add('open');
+    });
+  });
+
+  // ── Utility: find elements in the same visual row ──
+  function getRowSiblings(el, containerSel, itemSel) {
+    const container = el.closest(containerSel) || el.parentElement;
+    const items = Array.from(container.querySelectorAll(itemSel));
+    const elTop = el.offsetTop;
+    return items.filter(item => Math.abs(item.offsetTop - elTop) < 5);
+  }
+
+  // ── Mobile: scroll-based reveal for score cards and samples ──
+  // Simple trigger-line: the last element whose top is above 40% of viewport wins.
+  // On scroll-up, the current card just closes — no attempt to reopen previous ones.
+  let scrollTicking = false;
+  let hasScrolledEvidence = false;
+
+  function initMobileScrollReveal() {
+    if (!touchDevice) return;
+    window.addEventListener('scroll', onMobileScroll, { passive: true });
+    updateScoreCards();
+  }
+
+  function onMobileScroll() {
+    if (!scrollTicking) {
+      requestAnimationFrame(() => {
+        updateScoreCards();
+        updateSamples();
+        scrollTicking = false;
+      });
+      scrollTicking = true;
+    }
+  }
+
+  const TRIGGER = 0.40; // fraction of viewport height
+
+  function findActiveElement(elements) {
+    const triggerY = window.innerHeight * TRIGGER;
+    let active = null;
+
+    for (const el of elements) {
+      const top = el.getBoundingClientRect().top;
+      if (top < triggerY) {
+        active = el;
+      }
+    }
+    return active;
+  }
+
+  function updateScoreCards() {
+    const cards = Array.from(document.querySelectorAll('#page-scores.active .score-card'));
+    if (cards.length === 0) return;
+
+    const activeCard = findActiveElement(cards);
+
+    if (activeCard) {
+      const rowCards = getRowSiblings(activeCard, '.scores-grid', '.score-card');
+      cards.forEach(c => {
+        if (rowCards.includes(c)) {
+          c.classList.add('revealed');
+        } else {
+          c.classList.remove('revealed');
+        }
+      });
+    } else {
+      cards.forEach(c => c.classList.remove('revealed'));
+    }
+  }
+
+  function updateSamples() {
+    const samples = Array.from(document.querySelectorAll('#page-evidence.active .sample'));
+    if (samples.length === 0) return;
+
+    if (!hasScrolledEvidence) {
+      const first = samples[0];
+      if (first && first.getBoundingClientRect().top < window.innerHeight * 0.5) {
+        hasScrolledEvidence = true;
+      }
+      if (!hasScrolledEvidence) return;
+    }
+
+    const activeSample = findActiveElement(samples);
+
+    samples.forEach(s => {
+      if (s === activeSample) {
+        s.classList.add('open');
+      } else {
+        s.classList.remove('open');
+      }
+    });
+  }
+
+  // ── Animate sections on scroll ──
+  function initAnimations() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.animate-in').forEach(el => {
+      el.classList.remove('visible');
+      observer.observe(el);
+    });
+  }
+
+  // ── Benchmark bar chart animation ──
+  function initBenchmarks() {
+    const bmObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.querySelectorAll('.bm-row-fill').forEach(fill => {
+              fill.style.width = fill.dataset.pct + '%';
+            });
+          }, 200);
+          bmObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    document.querySelectorAll('.bm-chart').forEach(g => bmObserver.observe(g));
+  }
+
+  // ── Init ──
+  initAnimations();
+  initBenchmarks();
+</script>
+</body>
+</html>

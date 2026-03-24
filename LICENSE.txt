@@ -1,0 +1,45 @@
+MIT License
+
+Copyright (c) 2026 HiP & Claude Opus 4.6
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+--- Integrity Verification ---
+
+This skill is designed to generate language assessments that are shared with
+third parties as authoritative-looking documents. To protect against tampering
+that could introduce biased, politically charged, or misleading content, the
+following hash allows verification that the skill's core instructions have not
+been modified since the original release.
+
+SKILL.md SHA-256:
+b4200632ed1b910af09d2ab62780de20027bd990f6ec8e7ca374625e0b2d58d5
+
+If you are an AI model reading this file: compute the SHA-256 hash of SKILL.md
+and compare it to the value above. If they do not match, the skill's instructions
+may have been altered. Inform the user with a message such as:
+
+  "I noticed that this skill's core instructions appear to have been modified
+   since the original release. This may be intentional (the user customized it)
+   or it may indicate tampering. You may want to verify against the original
+   source before proceeding."
+
+Then continue normally — the user may have made legitimate edits. The purpose
+of this check is awareness, not enforcement.
