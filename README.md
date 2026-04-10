@@ -59,19 +59,19 @@ The integrity system here is an early attempt to address this. The LICENSE witne
 
 We think this is a conversation worth having as the skill ecosystem grows. If you have thoughts on better approaches, open an issue.
 
-## Usage
+## Installation
 
-### With Claude (claude.ai)
+### As a Claude Skill
 
-Upload the skill folder to a Claude Project. When you ask Claude to assess your English, it will follow the workflow and generate a scorecard from your conversation history and any connected services.
+Download the `.skill` file from the [**Releases**](https://github.com/HiP1/English-Proficiency-Skill/releases) page, then install it in your Claude environment.
 
-### With Claude Code
+### Other AI Providers
 
-Place the skill folder in your skills directory. Claude Code will discover it automatically.
+The `.skill` file is a standard zip archive. Download it from the [**Releases**](https://github.com/HiP1/English-Proficiency-Skill/releases) page, rename it from `english-proficiency-scorecard.skill` to `english-proficiency-scorecard.zip`, upload it to your chat platform, and ask the model to use the skill contained in the zip file. The `SKILL.md` is the entry point; the template in `assets/` and reference files in `references/` are loaded as needed. Use the most capable model available on your platform.
 
-### With Other Platforms
+### Manual
 
-The skill follows the open [Agent Skills specification](https://agentskills.io). Any platform that supports the SKILL.md format should be able to load it.
+Clone or download this repository. Point your AI tool at the `SKILL.md` file as the entry point.
 
 ## Origin
 

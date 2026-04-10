@@ -59,19 +59,19 @@ Le système d'intégrité présenté ici est une première tentative pour résou
 
 Nous pensons que cette conversation mérite d'avoir lieu à mesure que l'écosystème des skills se développe. Si vous avez des idées pour de meilleures approches, ouvrez une issue.
 
-## Utilisation
+## Installation
 
-### Avec Claude (claude.ai)
+### En tant que Skill Claude
 
-Importez le dossier du skill dans un Projet Claude. Quand vous demandez à Claude d'évaluer votre anglais, il suivra le workflow et générera un scorecard à partir de votre historique de conversation et de vos services connectés.
+Téléchargez le fichier `.skill` depuis la page [**Releases**](https://github.com/HiP1/English-Proficiency-Skill/releases), puis installez-le dans votre environnement Claude.
 
-### Avec Claude Code
+### Autres fournisseurs d'IA
 
-Placez le dossier du skill dans votre répertoire de skills. Claude Code le détectera automatiquement.
+Le fichier `.skill` est une archive zip standard. Téléchargez-le depuis la page [**Releases**](https://github.com/HiP1/English-Proficiency-Skill/releases), renommez-le de `english-proficiency-scorecard.skill` en `english-proficiency-scorecard.zip`, importez-le dans votre plateforme de chat et demandez au modèle d'utiliser le skill contenu dans le fichier zip. Le `SKILL.md` est le point d'entrée ; le template dans `assets/` et les fichiers de référence dans `references/` sont chargés selon les besoins. Utilisez le modèle le plus performant disponible sur votre plateforme.
 
-### Avec d'autres plateformes
+### Manuel
 
-Le skill suit la spécification ouverte [Agent Skills](https://agentskills.io). Toute plateforme compatible avec le format SKILL.md devrait pouvoir le charger.
+Clonez ou téléchargez ce dépôt. Dirigez votre outil IA vers le fichier `SKILL.md` comme point d'entrée.
 
 ## Origine
 
