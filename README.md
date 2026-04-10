@@ -1,3 +1,5 @@
+🇫🇷 [Français](README.fr.md) · 🇪🇸 [Español](README.es.md)
+
 # English Proficiency Scorecard
 
 An AI agent skill that assesses a user's English proficiency and generates an interactive HTML scorecard with estimated scores across major international frameworks: CEFR, IELTS (Academic and General Training), TOEFL iBT, Cambridge (CAE/CPE), and TOEIC (L&R and S&W).
@@ -57,19 +59,19 @@ The integrity system here is an early attempt to address this. The LICENSE witne
 
 We think this is a conversation worth having as the skill ecosystem grows. If you have thoughts on better approaches, open an issue.
 
-## Installation
- 
-### As a Claude Skill
- 
-Download the `.skill` file from the [Releases](../../releases) page, then install it in your Claude environment.
- 
-### Other AI Providers (ChatGPT, Gemini, etc.)
- 
-The `.skill` file is a standard zip archive. Rename it from `english-proficiency-scorecard.skill` to `english-proficiency-scorecard.zip`, upload it to your chat platform, and ask the model to use the skill contained in the zip file. The `SKILL.md` is the entry point; the reference files in `references/` are loaded as needed.
- 
-### Manual
- 
-Clone or download this repository. Point your AI tool at the `SKILL.md` file as the entry point.
+## Usage
+
+### With Claude (claude.ai)
+
+Upload the skill folder to a Claude Project. When you ask Claude to assess your English, it will follow the workflow and generate a scorecard from your conversation history and any connected services.
+
+### With Claude Code
+
+Place the skill folder in your skills directory. Claude Code will discover it automatically.
+
+### With Other Platforms
+
+The skill follows the open [Agent Skills specification](https://agentskills.io). Any platform that supports the SKILL.md format should be able to load it.
 
 ## Origin
 
